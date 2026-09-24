@@ -1,7 +1,8 @@
 # Questão 04 - Relatório mensal de transações do Ledger
-Questão 05 - Modernizar deployment legado'
+
 Jennifer está fechando a apresentação que vai levar pra Goldie na semana que vem, sobre crescimento de transações nos últimos 6 meses por categoria. Ela precisa dos números consolidados mas não escreve SQL, então mandou a demanda pra sua fila. O Ledger (PostgreSQL) tem o histórico completo, e as duas tabelas relevantes estão abaixo.
 
+```sql
 CREATE TABLE transactions (
   id              BIGSERIAL PRIMARY KEY,
   customer_id     BIGINT NOT NULL REFERENCES customers(id),
@@ -12,7 +13,9 @@ CREATE TABLE transactions (
   created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   completed_at    TIMESTAMPTZ
 );
+```
 
+```sql
 CREATE INDEX idx_transactions_created_at ON transactions(created_at);
 CREATE INDEX idx_transactions_status ON transactions(status);
 CREATE INDEX idx_transactions_category ON transactions(category);
@@ -22,6 +25,8 @@ CREATE TABLE customers (
   country     CHAR(2) NOT NULL,
   signup_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+```
+
 Categorias em produção hoje: subscription, one_time, refund e credit_adjustment. Só entra no relatório quem tem status = 'completed'. O campo amount_cents está em centavos de real e precisa aparecer na saída em reais com 2 casas decimais. O recorte é dos últimos 6 meses corridos a partir de hoje (2026-04-24), agrupado por mês (no formato YYYY-MM) e por categoria, trazendo duas métricas por linha: quantidade de transações e volume total em reais. Ordenação final: mês crescente, depois categoria crescente.
 
 Tarefa. Aplicando o framework T-A-G, escrever o prompt de IA que produza essa query SQL.
