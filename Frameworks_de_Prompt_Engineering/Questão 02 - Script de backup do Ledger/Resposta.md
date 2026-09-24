@@ -2,14 +2,11 @@
 
 ## Prompt
 
-Role (Papel)
-Atue como uma pessoa engenheira SRE sênior, com experiência em Bash,
-PostgreSQL, backups e AWS em ambientes Linux.
+Role (Papel)  
+Atue como uma pessoa engenheira SRE sênior, com experiência em Bash, PostgreSQL, backups e AWS em ambientes Linux.
 
-Task (Tarefa)
-Lorraine Baines, líder de SRE da Hill Valley Tech, precisa automatizar
-o backup diário do Ledger, um PostgreSQL que roda em uma instância EC2.
-Escreva um script Bash para Ubuntu 22.04 LTS com estes dados:
+Task (Tarefa)  
+Lorraine Baines, líder de SRE da Hill Valley Tech, precisa automatizar  o backup diário do Ledger, um PostgreSQL que roda em uma instância EC2. Escreva um script Bash para Ubuntu 22.04 LTS com estes dados:
 
 ```
 Host: ledger-db.internal.hvt.io
@@ -25,38 +22,14 @@ Bucket S3: hvt-ledger-backups
 Log: /var/log/ledger-backup.log
 ```
 
-O script deve gerar um dump SQL com pg_dump e compactá-lo com gzip
-em pipeline, evitando manter uma cópia SQL descompactada no disco.
-Deve enviar o arquivo usando aws s3 cp e, somente após upload bem-sucedido,
-remover do S3 os backups com mais de 30 dias, usando LastModified em UTC.
-Use um prefixo exclusivo ledger/ e nomes únicos identificáveis, sem
-remover arquivos de outras aplicações. Processe a listagem completa,
-com paginação automática da AWS CLI e tratamento seguro de JSON.
-Pode usar python3, disponível como pré-requisito explícito, para filtrar
-a listagem. Declare a premissa de bucket sem versionamento e explique
-o tratamento adicional necessário caso haja versões anteriores.
+O script deve gerar um dump SQL com pg_dump e compactá-lo com gzip em pipeline, evitando manter uma cópia SQL descompactada no disco. Deve enviar o arquivo usando aws s3 cp e, somente após upload bem-sucedido, remover do S3 os backups com mais de 30 dias, usando LastModified em UTC. Use um prefixo exclusivo ledger/ e nomes únicos identificáveis, sem remover arquivos de outras aplicações. Processe a listagem completa, com paginação automática da AWS CLI e tratamento seguro de JSON. Pode usar python3, disponível como pré-requisito explícito, para filtrar a listagem. Declare a premissa de bucket sem versionamento e explique o tratamento adicional necessário caso haja versões anteriores.
 
-Inclua modo estrito com pipefail, validação de PGPASSWORD sem exibi-la,
-bloqueio com flock contra execuções simultâneas, permissões restritas,
-temporários exclusivos e limpeza local tanto no sucesso quanto na falha.
-Verifique dependências e espaço livre antes do dump, usando 24 GiB
-como margem inicial configurável, sem afirmar que ela garante espaço
-para qualquer crescimento. Verifique a integridade gzip antes do upload.
-Registre início, etapas, erros e término com timestamps. Preserve erros
-das ferramentas no log sem habilitar rastreamento que exponha segredos.
-Retorne zero apenas quando todas as etapas concluírem; retorne valor
-não zero para falhas, inclusive na retenção, e 75 para lock ocupado.
+Inclua modo estrito com pipefail, validação de PGPASSWORD sem exibi-la, bloqueio com flock contra execuções simultâneas, permissões restritas, temporários exclusivos e limpeza local tanto no sucesso quanto na falha. Verifique dependências e espaço livre antes do dump, usando 24 GiB como margem inicial configurável, sem afirmar que ela garante espaço para qualquer crescimento. Verifique a integridade gzip antes do upload. Registre início, etapas, erros e término com timestamps. Preserve erros das ferramentas no log sem habilitar rastreamento que exponha segredos. Retorne zero apenas quando todas as etapas concluírem, retorne valor não zero para falhas, inclusive na retenção, e 75 para lock ocupado.
 
-Não coloque credenciais no código ou na linha da cron. Não invente o
-identificador do secret ou sua estrutura. Explique que a cron precisa
-invocar o mecanismo existente de injeção de PGPASSWORD em cada execução.
+Não coloque credenciais no código ou na linha da cron. Não invente o identificador do secret ou sua estrutura. Explique que a cron precisa invocar o mecanismo existente de injeção de PGPASSWORD em cada execução.
 
 Format (Formato)
-Entregue um bloco de código com o script completo ledger-backup.sh,
-um exemplo de cron diária às 02:00 e até seis tópicos curtos com
-pré-requisitos, permissões, premissas e limitações. Diferencie a checagem
-gzip de um teste real de restauração. Não afirme ter acessado PostgreSQL,
-AWS ou executado testes que não realizou.
+Entregue um bloco de código com o script completo ledger-backup.sh, um exemplo de cron diária às 02:00 e até seis tópicos curtos com pré-requisitos, permissões, premissas e limitações. Diferencie a checagem gzip de um teste real de restauração. Não afirme ter acessado PostgreSQL, AWS ou executado testes que não realizou.
 
 ## Modelo
 
@@ -210,7 +183,7 @@ PATH=/usr/local/bin:/usr/bin:/bin
 - **Pré-requisitos:** instalar Bash, AWS CLI, Python 3, gzip, util-linux (`flock`), coreutils e cliente PostgreSQL compatível com a versão do servidor, preferencialmente da mesma versão principal. Provisionar o diretório com modo `0700`, o log com `0600` e ambos pertencendo ao usuário de serviço. O script deve ser executável, e o log precisa de rotação.
 - **Acessos:** `backup_user` precisa de conexão e leitura dos objetos necessários ao dump. A IAM role precisa de `s3:ListBucket` limitado ao prefixo e de `s3:PutObject`, `s3:DeleteObject` e `s3:AbortMultipartUpload` em `ledger/`*; a integração do secret requer `secretsmanager:GetSecretValue`. Acrescentar permissões KMS quando a configuração de criptografia exigir.
 - **Retenção:** considera objetos com mais de 30 períodos de 24 horas, avaliados diariamente, apenas no prefixo e padrão de nomes gerenciados. A premissa é bucket sem versionamento e sem Object Lock impeditivo. Em bucket versionado, a remoção simples cria delete markers: é necessário também configurar expiração de versões não atuais e limpeza dos marcadores via Lifecycle. Recomenda-se Lifecycle para uploads multipart incompletos.
-- **Disco e falhas:** o pipeline evita o SQL descompactado; 24 GiB são uma margem inicial, não uma garantia. Os temporários são removidos mesmo se o upload falhar, exigindo novo dump na próxima tentativa. `pipefail` impede que um erro do `pg_dump` seja mascarado pelo gzip. Falha na retenção retorna erro, mesmo que o novo backup já esteja no S3. SIGKILL ou queda da instância podem deixar temporários que exigem limpeza operacional.
+- **Disco e falhas:** o pipeline evita o SQL descompactado, 24 GiB são uma margem inicial, não uma garantia. Os temporários são removidos mesmo se o upload falhar, exigindo novo dump na próxima tentativa. `pipefail` impede que um erro do `pg_dump` seja mascarado pelo gzip. Falha na retenção retorna erro, mesmo que o novo backup já esteja no S3. SIGKILL ou queda da instância podem deixar temporários que exigem limpeza operacional.
 - **Validação:** `gzip -t` verifica o arquivo compactado, mas não comprova restauração. É necessário testar a restauração em banco isolado e monitorar falhas e ausência de backups. O dump cobre o banco informado, sem fornecer PITR nem incluir objetos globais como roles. Não houve acesso ao PostgreSQL ou à AWS nesta resposta.
 
 ## Justificativa
