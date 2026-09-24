@@ -45,7 +45,7 @@ GPT-6, da OpenAI.
 
 ## Output
 
-Resposta produzida nesta sessão a partir do prompt acima; não houve chamada separada a outro modelo.
+Resposta produzida nesta sessão a partir do prompt acima. 
 
 Premissas a validar: imagem ilustrativa `chronos-api:2.47.0`, processo compatível com UID/GID `10001`, endpoints `/health/live` e `/health/ready` implementados e Secret `chronos-api-secrets` previamente provisionado. Os recursos abaixo são valores iniciais para teste, não medições da aplicação. Este YAML depende dessas condições antes de ser aplicado.
 

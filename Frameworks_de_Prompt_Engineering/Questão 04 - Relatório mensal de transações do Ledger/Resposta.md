@@ -2,7 +2,7 @@
 
 ## Prompt
 
-### Task (Tarefa)
+### Task
 
 Você é especialista em PostgreSQL. Escreva uma query SQL de leitura para um relatório mensal de transações do Ledger que Jennifer apresentará a Goldie, com quantidade de transações e volume total em reais por mês e categoria nos últimos seis meses corridos.
 
@@ -30,7 +30,7 @@ customers (
 
 Existem índices individuais em `transactions.created_at`, `transactions.status` e `transactions.category`. As categorias atuais são `subscription`, `one_time`, `refund` e `credit_adjustment`.
 
-### Action (Ação)
+### Action
 
 Construa a query seguindo estas regras:
 
@@ -43,17 +43,20 @@ Construa a query seguindo estas regras:
 7. Use somente `transactions`, pois não há filtros nem métricas de clientes. Retorne apenas combinações de mês e categoria com transações elegíveis, sem preencher linhas ausentes com zero.
 8. Aplique os limites diretamente a `created_at` no `WHERE`, sem funções sobre essa coluna no filtro, para permitir o aproveitamento do índice existente.
 
-### Goal (Objetivo)
+### Goal
 
 Entregue uma única query PostgreSQL pronta para execução, que consolide os números necessários para Jennifer analisar a evolução mensal por categoria. Não invente resultados nem acrescente métricas de crescimento percentual. Após a query, explique brevemente as premissas de data e fuso, a conversão de centavos para reais e a ordenação.
 
 ## Modelo
 
-Modelo proposto: GPT-4.1 da OpenAi.
+Modelo proposto: GPT-4.1 da OpenAI.
 
 ## Output
 
+Resposta produzida nesta sessão a partir do prompt acima.
+
 ```sql
+
 WITH limites AS (
     SELECT
         (DATE '2026-04-24' - INTERVAL '6 months')
@@ -84,8 +87,11 @@ A divisão por `100.0` evita divisão inteira, e `NUMERIC(22, 2)` produz um valo
 
 ## Justificativa do uso de T-A-G
 
-| Elemento | Como aparece no prompt | Por que ajuda |
-| --- | --- | --- |
-| **Task — Tarefa** | Define a produção de uma query PostgreSQL para o relatório mensal e fornece o esquema disponível. | Delimita a tarefa e evita a invenção de tabelas ou colunas. |
-| **Action — Ação** | Detalha filtros, limites de datas, agrupamento, conversão monetária, colunas de saída e ordenação. | Traduz a necessidade de negócio em operações SQL verificáveis e explicita as ambiguidades do recorte. |
-| **Goal — Objetivo** | Solicita uma query pronta para execução que permita analisar a evolução mensal por categoria, acompanhada de uma explicação curta. | Define o resultado esperado e mantém a resposta alinhada ao uso de Jennifer na apresentação. |
+
+| Elemento            | Como aparece no prompt                                                                                                             | Por que ajuda                                                                                         |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| **Task — Tarefa**   | Define a produção de uma query PostgreSQL para o relatório mensal e fornece o esquema disponível.                                  | Delimita a tarefa e evita a invenção de tabelas ou colunas.                                           |
+| **Action — Ação**   | Detalha filtros, limites de datas, agrupamento, conversão monetária, colunas de saída e ordenação.                                 | Traduz a necessidade de negócio em operações SQL verificáveis e explicita as ambiguidades do recorte. |
+| **Goal — Objetivo** | Solicita uma query pronta para execução que permita analisar a evolução mensal por categoria, acompanhada de uma explicação curta. | Define o resultado esperado e mantém a resposta alinhada ao uso de Jennifer na apresentação.          |
+
+

@@ -2,10 +2,10 @@
 
 ## Prompt
 
-Role (Papel)  
+Role
 Atue como uma pessoa engenheira SRE sênior, com experiência em Bash, PostgreSQL, backups e AWS em ambientes Linux.
 
-Task (Tarefa)  
+Task 
 Lorraine Baines, líder de SRE da Hill Valley Tech, precisa automatizar  o backup diário do Ledger, um PostgreSQL que roda em uma instância EC2. Escreva um script Bash para Ubuntu 22.04 LTS com estes dados:
 
 ```
@@ -28,7 +28,7 @@ Inclua modo estrito com pipefail, validação de PGPASSWORD sem exibi-la, bloque
 
 Não coloque credenciais no código ou na linha da cron. Não invente o identificador do secret ou sua estrutura. Explique que a cron precisa invocar o mecanismo existente de injeção de PGPASSWORD em cada execução.
 
-Format (Formato)
+Format
 Entregue um bloco de código com o script completo ledger-backup.sh, um exemplo de cron diária às 02:00 e até seis tópicos curtos com pré-requisitos, permissões, premissas e limitações. Diferencie a checagem gzip de um teste real de restauração. Não afirme ter acessado PostgreSQL, AWS ou executado testes que não realizou.
 
 ## Modelo
@@ -36,6 +36,8 @@ Entregue um bloco de código com o script completo ledger-backup.sh, um exemplo 
 GPT-6 da OpenAI.
 
 ## Output
+
+Resposta produzida nesta sessão a partir do prompt acima. 
 
 Salvar como `ledger-backup.sh`:
 

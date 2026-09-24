@@ -2,7 +2,7 @@
 
 ## Prompt
 
-Task (Tarefa)
+Task
 
 Produza, em português, um relatório executivo de oportunidades de redução de custos AWS para Goldie Wilson, CEO da Hill Valley Tech, usando somente o CSV abaixo. A meta é reduzir 15% da conta mensal até o fim do próximo trimestre, sem degradar SLA. Não use ferramentas ou acesse arquivos.
 
@@ -22,14 +22,14 @@ NAT Gateway,network,1200,,3 gateways ativos
 Lambda,compute,900,30,~12M invocacoes/mes
 ```
 
-Action (Ação)
+Action
 1. Some a conta mensal, calcule 15% em USD/mês e o teto mensal desejado.
 2. Proponha um cenário de planejamento com premissas explícitas de redução por serviço, o CSV não permite comprovar economias ou dimensionamento. Não interprete utilização média baixa como desperdício eliminável.
 3. Apresente oportunidades em tabela, em ordem decrescente de economia mensal estimada. Inclua serviço, ação, premissa percentual sobre o serviço, USD/mês, percentual da conta total, esforço baixo/médio/alto e riscos ou pré-requisitos. Diferencie percentual sobre o serviço de percentual sobre a conta, não use preços externos ou invente medições.
 4. Evite dupla contagem, inclusive entre EKS e EC2: declare que o cenário depende de rubricas sem sobreposição e valide a atribuição dos custos antes de somar. Preserve RDS Multi-AZ, redundância de NAT e observabilidade crítica. Não proponha cancelar compromissos EC2 já contratados como economia imediata. Não sugira compra de compromissos para carga variável antes de validar a linha de base.
 5. Some o cenário uma única vez, mostre quanto cobre da meta e a margem ou lacuna. Inclua plano de 30/60/90 dias com responsáveis por função, validação de picos, latência, erros e rollback, não invente valores do SLA.
 
-Goal (Objetivo)
+Goal
 Dar à CEO uma decisão verificável sobre como atingir pelo menos 15% de redução mensal ao final do trimestre, distinguindo economia potencial de realizada e condicionando a adoção à preservação do SLA. O alvo é o custo mensal de saída do trimestre, não 15% de redução acumulada em todo o período. Entregue resumo, tabela, consolidação numérica e plano de execução, com no máximo 1.000 palavras e sem garantir economias ainda não medidas.
 
 ## Modelo
@@ -38,7 +38,7 @@ GPT-6 da OpenAI.
 
 ## Output
 
-Resposta produzida nesta sessão a partir do prompt acima, não houve chamada separada bem-sucedida a outro modelo.
+Resposta produzida nesta sessão a partir do prompt acima.
 
 ### Relatório executivo — Redução de custos AWS
 
